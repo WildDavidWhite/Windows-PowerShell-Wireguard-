@@ -1,4 +1,4 @@
-# Windows-PowerShell-Wireguard-
+# Windows PowerShell自动生成Wireguard配置文件脚本
 一个Windows PowerShell脚本，用于自动生成Wireguard服务器端和客户端配置文件  
 最近在发现Wireguard这个应用在作为VPN方面很好用，遂试试。但是在建立服务器和客户端配置文件时要生成密钥而且还要放在正确位置并合理设置  非常繁琐，所以让ai写了一个脚本用于实现自动生成配置文件。  
 另外由于基本上没有公网IPV4地址，要远程访问家里电脑的共享文件挺麻烦，但是好在现在几乎每个设备都有自己的公网IPV6，所以这个脚本可以自动获取本机IPV6并生成脚本。  
