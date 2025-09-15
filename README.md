@@ -13,3 +13,4 @@
 注1：如果你有网络相关问题可以参考防火墙规则.txt进行配置  
 注2：本人非计科专业，如有问题还请见谅~  
 <img width="1347" height="1096" alt="无标题" src="https://github.com/user-attachments/assets/452662ae-ba29-4826-96d5-516924571e29" />
+<img width="534" height="94" alt="2" src="https://github.com/user-attachments/assets/178152e6-c9c8-4ea9-bfd8-900b6203ac38" />
