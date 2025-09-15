@@ -1,0 +1,30 @@
+Set-NetIPInterface -Forwarding Enabled//这条命令启用 IP 转发功能
+New-NetFirewallRule -DisplayName "WireGuard" -Direction Inbound -Protocol UDP -LocalPort 51820 -Action Allow//入站创建防火墙规则，允许 WireGuard 的 UDP 流量通过。
+$Interface = Get-NetAdapter | Where-Object { $_.InterfaceDescription -match "Wi-Fi|以太网" }//这是一条获取网络适配器信息的命令
+New-NetNat -Name "WireGuard-NAT" -InternalIPInterfaceAddressPrefix "10.0.0.0/24"//这条命令创建了一个新的 NAT 规则任何源 IP 地址在 10.0.0.0/24 这个网段内的流量，在转发到互联网时，都要把源 IP 地址替换成电脑的公网 IP 地址
+# 自动生成配置文件，并配置 Windows 系统 IP 转发和防火墙规则
+# ====================================================================
+# 设置错误处理
+$ErrorActionPreference = "Stop"
+
+# --- 系统配置部分：强制启用 IP 转发和设置防火墙规则 ---
+Write-Host "正在进行系统配置：启用 IP 转发和设置防火墙规则..." -ForegroundColor Yellow
+try {
+    # 强制启用 IP 转发，这是 WireGuard 流量转发的关键
+    Set-NetIPInterface -Forwarding Enabled -Confirm:$false
+    Write-Host "IP 转发已启用。" -ForegroundColor Green
+    
+    # 创建 WireGuard 的 UDP 端口规则，允许 WireGuard 流量
+    New-NetFirewallRule -DisplayName "WireGuard" -Direction Inbound -Protocol UDP -LocalPort 51820 -Action Allow -Force
+    Write-Host "Windows 防火墙规则已创建，允许UDP 51820端口流量。" -ForegroundColor Green
+    
+    # 创建 ICMP 回显请求规则，确保 Ping 命令可以成功
+    # 允许IPv4 ICMP回显请求
+    New-NetFirewallRule -DisplayName "核心网络诊断 - ICMP回显请求(ICMPv4-In)" -Direction Inbound -Protocol ICMPv4 -IcmpType 8 -Action Allow -Force
+    # 允许IPv6 ICMP回显请求
+    New-NetFirewallRule -DisplayName "核心网络诊断 - ICMP回显请求(ICMPv6-In)" -Direction Inbound -Protocol ICMPv6 -IcmpType 128 -Action Allow -Force
+    Write-Host "Windows 防火墙规则已创建，允许IPv4/IPv6 Ping流量。" -ForegroundColor Green
+} catch {
+    Write-Host "错误: 系统配置失败。请确保您以管理员身份运行此脚本。" -ForegroundColor Red
+    exit 1
+}
