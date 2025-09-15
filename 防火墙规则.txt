@@ -1,8 +1,12 @@
+# 1、====================================================================
+#这部分是一些手动配置防火墙和ip转发的power shell命令
 Set-NetIPInterface -Forwarding Enabled//这条命令启用 IP 转发功能
 New-NetFirewallRule -DisplayName "WireGuard" -Direction Inbound -Protocol UDP -LocalPort 51820 -Action Allow//入站创建防火墙规则，允许 WireGuard 的 UDP 流量通过。
 $Interface = Get-NetAdapter | Where-Object { $_.InterfaceDescription -match "Wi-Fi|以太网" }//这是一条获取网络适配器信息的命令
 New-NetNat -Name "WireGuard-NAT" -InternalIPInterfaceAddressPrefix "10.0.0.0/24"//这条命令创建了一个新的 NAT 规则任何源 IP 地址在 10.0.0.0/24 这个网段内的流量，在转发到互联网时，都要把源 IP 地址替换成电脑的公网 IP 地址
-# 自动生成配置文件，并配置 Windows 系统 IP 转发和防火墙规则
+#2、 ====================================================================
+#下面内容是一个自动配置 Windows 系统 IP 转发和防火墙规则的脚本代码，如果你有防火墙相关问题（ping不通之类的），它应该能解决
+# 自动配置 Windows 系统 IP 转发和防火墙规则
 # ====================================================================
 # 设置错误处理
 $ErrorActionPreference = "Stop"
